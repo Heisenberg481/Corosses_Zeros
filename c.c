@@ -2,55 +2,39 @@
 #include <stdlib.h>
 #include <time.h>
 
-#define SPACE ' '
+#define SPACE 32
+#define X 88
+#define O 79
 
-int matrix[4][4] = {{
-                        SPACE,
-                        SPACE,
-                        SPACE,
-                        SPACE,
-                    },
-                    {
-                        SPACE,
-                        SPACE,
-                        SPACE,
-                        SPACE,
-                    },
-                    {
-                        SPACE,
-                        SPACE,
-                        SPACE,
-                        SPACE,
-                    },
-                    {
-                        SPACE,
-                        SPACE,
-                        SPACE,
-                        SPACE,
-                    }};
+int matrix[4][4] = {{SPACE,SPACE,SPACE,SPACE,},
+                    {SPACE,SPACE,SPACE,SPACE,},
+                    {SPACE,SPACE,SPACE,SPACE,},
+                    {SPACE,SPACE,SPACE,SPACE,}};
 
-void printMatrix(), playerTurn(), computerTurn(), invalidEnter(int row, int column);
-int check();
+void printMatrix(), playerTurn(), computerTurn(), resetMatrix();
+int check(), whoWin(int row, int column), invalidEnter(int row, int column);
 
 int main()
 {
-    int win = 0;
-    while (win == 0)
+    int win = 0, restart = 0;
+    while (!win)
     {
         printMatrix();
         playerTurn();
         win = check();
+        if (win)
+            break;
         computerTurn();
         win = check();
     }
     printMatrix();
-    if (win == 1)
+
+    printf("TRY AGAIN? (0 for exit)\n");
+    scanf("%d", &restart);
+    if (restart)
     {
-        printf("YOU WON!");
-    }
-    else if (win == 2)
-    {
-        printf("I WON!!!");
+        resetMatrix();
+        main();
     }
     return 0;
 }
@@ -62,7 +46,7 @@ void printMatrix()
         for (int j = 1; j < 4; j++)
         {
             printf("|");
-            printf("%d", matrix[i][j]);
+            printf("%c", matrix[i][j]);
         }
         printf("|");
         printf("\n");
@@ -76,16 +60,27 @@ void playerTurn()
     scanf("%d", &row);
     printf("Column:");
     scanf("%d", &column);
-    invalidEnter(row, column);
-    matrix[row][column] = 88;
+    if (invalidEnter(row, column) == 1)
+    {
+        matrix[row][column] = X;
+    }
 }
 
-void invalidEnter(int row, int column)
+int invalidEnter(int row, int column)
 {
-    if ((row > 3) || (row < 1) || (column > 3) || (column < 1))
+    if (((row > 3) || (row < 1) || (column > 3) || (column < 1)))
     {
-        printf("Invalid enter, try againg");
+        printf("Invalid enter, try againg(Numbers must be from 1 to 3)\n");
         playerTurn();
+    }
+    else if ((matrix[row][column] != 32))
+    {
+        printf("Invalid enter, try againg (This place is occupied)\n");
+        playerTurn();
+    }
+    else
+    {
+        return 1;
     }
 }
 
@@ -95,50 +90,31 @@ int check()
     {
         if ((matrix[1][i] == matrix[2][i]) && (matrix[2][i] == matrix[3][i]))
         {
-            if (matrix[1][i] == 88)
-            {
-                return 1;
-            }
-            else if (matrix[1][i] == 79)
-            {
-                return 2;
-            }
+            return whoWin(1, i);
         }
         if ((matrix[i][1] == matrix[i][2]) && (matrix[i][2] == matrix[i][3]))
         {
-            if (matrix[i][1] == 88)
-            {
-                return 1;
-            }
-            else if (matrix[i][1] == 79)
-            {
-                return 2;
-            }
+            return whoWin(i, 1);
         }
     }
     if ((matrix[1][1] == matrix[2][2]) && (matrix[2][2] == matrix[3][3]))
     {
-        if (matrix[1][1] == 88)
-        {
-            return 1;
-        }
-        else if (matrix[1][1] == 79)
-        {
-            return 2;
-        }
+        return whoWin(1, 1);
     }
     if ((matrix[1][3] == matrix[2][2]) && (matrix[2][2] == matrix[3][1]))
     {
-        if (matrix[1][3] == 88)
+        return whoWin(1, 3);
+    }
+    for (int i = 1; i < 4; i++)
+    {
+        for (int j = 1; j < 4; j++)
         {
-            return 1;
-        }
-        else if (matrix[1][3] == 79)
-        {
-            return 2;
+            if (matrix[i][j] == SPACE)
+                return 0;
         }
     }
-    return 0;
+    printf("Draw!!!\n");
+    return 3;
 }
 
 void computerTurn()
@@ -146,12 +122,41 @@ void computerTurn()
     int row, column;
     row = ((rand() % (3 - 1 + 1)) + 1);
     column = ((rand() % (3 - 1 + 1)) + 1);
-    if (matrix[row][column] != 32)
+    if (matrix[row][column] != SPACE)
     {
         computerTurn();
     }
     else
     {
-        matrix[row][column] = 79;
+        matrix[row][column] = O;
+    }
+}
+
+void resetMatrix()
+{
+    for (int i = 1; i < 4; i++)
+    {
+        for (int j = 1; j < 4; j++)
+        {
+            matrix[i][j] = SPACE;
+        }
+    }
+}
+
+int whoWin(int row, int column)
+{
+    if (matrix[row][column] == X)
+    {
+        printf("YOU WON!\n");
+        return 1;
+    }
+    else if (matrix[row][column] == O)
+    {
+        printf("I WON!!!\n");
+        return 2;
+    }
+    else
+    {
+        return 0;
     }
 }
