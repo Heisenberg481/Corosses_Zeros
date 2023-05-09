@@ -116,6 +116,28 @@ int check()
             }
         }
     }
+    if ((matrix[1][1] == matrix[2][2]) && (matrix[2][2] == matrix[3][3]))
+    {
+        if (matrix[1][1] == 88)
+        {
+            return 1;
+        }
+        else if (matrix[1][1] == 79)
+        {
+            return 2;
+        }
+    }
+    if ((matrix[1][3] == matrix[2][2]) && (matrix[2][2] == matrix[3][1]))
+    {
+        if (matrix[1][3] == 88)
+        {
+            return 1;
+        }
+        else if (matrix[1][3] == 79)
+        {
+            return 2;
+        }
+    }
     return 0;
 }
 
