@@ -39,13 +39,11 @@ int main()
     {
         printMatrix();
         playerTurn();
-        printf("%d\n", win);
         win = check();
-        printf("%d\n", win);
         computerTurn();
         win = check();
-        printf("%d\n", win);
     }
+    printMatrix();
     if (win == 1)
     {
         printf("YOU WON!");
@@ -106,44 +104,19 @@ int check()
                 return 2;
             }
         }
-        else if ((matrix[i][1] == matrix[i][2]) && (matrix[i][2] == matrix[i][3]))
+        if ((matrix[i][1] == matrix[i][2]) && (matrix[i][2] == matrix[i][3]))
         {
             if (matrix[i][1] == 88)
             {
                 return 1;
             }
-            else if (matrix[1][i] == 79)
+            else if (matrix[i][1] == 79)
             {
                 return 2;
             }
         }
     }
-    if ((matrix[1][1] == matrix[2][2]) && (matrix[2][2] == matrix[3][3]))
-    {
-        if (matrix[1][1] == 88 && matrix[2][2] == 88 && matrix[3][3] == 88)
-        {
-            return 1;
-        }
-        else if (matrix[1][1] == 79 && matrix[2][2] == 79 && matrix[1][1] == 79)
-        {
-            return 2;
-        }
-    }
-    else if ((matrix[1][3] == matrix[2][2]) && (matrix[2][2] == matrix[3][1]))
-    {
-        if (matrix[1][3] == 88 && matrix[2][2] == 88 && matrix[3][1] == 88)
-        {
-            return 1;
-        }
-        else if (matrix[1][3] == 79 && matrix[2][2] == 79 && matrix[3][1] == 79)
-        {
-            return 2;
-        }
-    }
-    else
-    {
-        return 0;
-    }
+    return 0;
 }
 
 void computerTurn()
@@ -151,7 +124,6 @@ void computerTurn()
     int row, column;
     row = ((rand() % (3 - 1 + 1)) + 1);
     column = ((rand() % (3 - 1 + 1)) + 1);
-    printf("%d %d\n", row, column);
     if (matrix[row][column] != 32)
     {
         computerTurn();
